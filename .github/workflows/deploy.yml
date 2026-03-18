@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}   # автоматически = username/my-app
+  IMAGE_NAME: ${{ github.repository_owner }}/my-app  
 
 jobs:
   build-and-push:
@@ -24,14 +24,14 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}   # автоматический токен, настраивать не нужно
+          password: ${{ secrets.GITHUB_TOKEN }}   о
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ env.IMAGE_NAME }}:latest
+          tags: ghcr.io/${{ github.actor }}/my-app:latest
 
   deploy:
     needs: build-and-push   # ждёт пока image не запушен
