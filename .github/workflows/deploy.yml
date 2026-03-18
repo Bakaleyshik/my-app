@@ -2,18 +2,14 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [main]     # запускается при пуше в main
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/my-app  
+    branches: [main]
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write    # нужно для пуша в ghcr.io
+      packages: write
 
     steps:
       - name: Checkout code
@@ -24,17 +20,17 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.CR_PAT }}   о
+          password: ${{ secrets.CR_PAT }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.actor }}/my-app:latest
+          tags: ghcr.io/bakaleyshik/my-app:latest
 
   deploy:
-    needs: build-and-push   # ждёт пока image не запушен
+    needs: build-and-push
     runs-on: ubuntu-latest
 
     steps:
