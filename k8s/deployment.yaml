@@ -13,19 +13,30 @@ spec:
         app: my-app
     spec:
       containers:
-        - name: my-app
-          image: ghcr.io/bakaleyshik/my-app:latest
-          ports:
-            - containerPort: 8000
-          livenessProbe:       # "жив ли контейнер?"
-            httpGet:
-              path: /health
-              port: 8000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          readinessProbe:      # "готов ли принимать трафик?"
-            httpGet:
-              path: /health
-              port: 8000
-            initialDelaySeconds: 3
-            periodSeconds: 5
+      - name: my-app
+        image: ghcr.io/bakaleyshik/my-app:latest
+        ports:
+          - containerPort: 8000
+        env:
+          - name: APP_ENV
+            valueFrom:
+              configMapKeyRef:
+                name: my-app-config
+                key: APP_ENV
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: my-app-secret
+                key: API_KEY
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 5
